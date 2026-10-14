@@ -62,11 +62,15 @@ document.querySelector<HTMLButtonElement>("#counter-open")!.onclick = () => {
   host.append(panel);
   renderStats();
 
-   changes.addEventListener("count-changed", updateStats);
+  changes.addEventListener("count-changed", updateStats);
 };
 document.querySelector<HTMLButtonElement>("#counter-close")!.onclick = () => {
   if (!panel) return;
+
+  changes.removeEventListener("count-changed", updateStats);
+
   panel.remove();
+
   panel = null;
 };
 drawMeter();
