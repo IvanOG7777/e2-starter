@@ -13,6 +13,14 @@ interface AllocationStats {
   balance: number;
 }
 
+interface ResourceBar {
+  label: string;
+  value: number;
+  color: string;
+  textY: number;
+  barY: number;
+}
+
 function calculateAllocation(producers: number): AllocationStats {
   const production = producers * 3;
   const consumption = 6;
@@ -37,14 +45,35 @@ function updateAllocation() {
   }
   ctx.fillStyle = "#233e43";
   ctx.font = "14px system-ui";
-  ctx.fillText(`Producers: ${producers} / 6`, 18, 76);
-  ctx.fillText(`Production: ${production}`, 18, 102);
-  ctx.fillStyle = "#27766b";
-  ctx.fillRect(18, 110, production * 14, 20);
+
   ctx.fillStyle = "#233e43";
-  ctx.fillText(`Consumption: ${consumption}`, 18, 154);
-  ctx.fillStyle = "#a44d23";
-  ctx.fillRect(18, 162, consumption * 14, 20);
+  ctx.font = "14px system-ui";
+  ctx.fillText(`Producers: ${producers} / 6`, 18, 76);
+
+  const bars: ResourceBar[] = [
+    {
+      label: "Production",
+      value: production,
+      color: "#27766b",
+      textY: 102,
+      barY: 110,
+    },
+    {
+      label: "Consumption",
+      value: consumption,
+      color: "#a44d23",
+      textY: 154,
+      barY: 162,
+    },
+  ];
+
+  for (const bar of bars) {
+    ctx.fillStyle = "#233e43";
+    ctx.fillText(`${bar.label}: ${bar.value}`, 18, bar.textY);
+
+    ctx.fillStyle = bar.color;
+    ctx.fillRect(18, bar.barY, bar.value * 14, 20);
+  }
   readout.textContent =
     `Assigned: ${producers}/6 · Production: ${production} · Consumption: ${consumption} · Balance: ${
       balance > 0 ? "+" : ""
