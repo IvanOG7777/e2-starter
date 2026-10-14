@@ -7,10 +7,26 @@ const readout = document.querySelector<HTMLParagraphElement>(
 )!;
 let producers = 2;
 
-function updateAllocation() {
+interface AllocationStats {
+  production: number;
+  consumption: number;
+  balance: number;
+}
+
+function calculateAllocation(producers: number): AllocationStats {
   const production = producers * 3;
   const consumption = 6;
   const balance = production - consumption;
+
+  return {
+    production,
+    consumption,
+    balance,
+  };
+}
+
+function updateAllocation() {
+  const { production, consumption, balance } = calculateAllocation(producers);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < 6; i++) {
     ctx.fillStyle = i < producers ? "#27766b" : "#c9d2c9";
