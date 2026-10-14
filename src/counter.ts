@@ -57,8 +57,8 @@ function renderStats() {
 
   const shield = getShieldSnapshot();
 
-  panel.textContent = `Shield charge: ${shield.charge} · Missing charge: ${shield.missing}`;
-
+  panel.textContent =
+    `Shield charge: ${shield.charge} · Missing charge: ${shield.missing}`;
 }
 
 function setCount(next: number) {
@@ -66,10 +66,11 @@ function setCount(next: number) {
   if (bounded === count) return;
 
   count = bounded;
-  drawMeter();
 
   changes.dispatchEvent(new Event("count-changed"));
 }
+
+changes.addEventListener("count-changed", drawMeter);
 
 document.querySelector<HTMLButtonElement>("#counter-less")!.onclick = () => {
   setCount(count - 1);
