@@ -3,6 +3,7 @@ export {};
 const canvas = document.querySelector<HTMLCanvasElement>("#rover-canvas")!;
 const ctx = canvas.getContext("2d")!;
 const readout = document.querySelector<HTMLParagraphElement>("#rover-readout")!;
+const pending = document.querySelector<HTMLElement>("#rover-pending")!;
 const headings = ["North", "East", "South", "West"];
 let x = 2;
 let y = 2;
@@ -11,6 +12,17 @@ let direction = 0;
 type RoverCommand = () => void;
 
 const commandQueue: RoverCommand[] = [];
+
+function updateQueueDisplay() {
+  if (commandQueue.length === 0) {
+    pending.textContent = "Empty";
+    return;
+  }
+
+  pending.textContent = commandQueue
+    .map((command) => command === moveForward ? "Forward" : "Right")
+    .join(" → ");
+}
 
 function drawRover() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -49,16 +61,44 @@ function turnRight() {
   drawRover();
 }
 
+function runCommands() {
+  for (const command of commandQueue) {
+    command();
+  }
+
+  commandQueue.length = 0;
+  updateQueueDisplay();
+}
+
+const runButton = document.querySelector<HTMLButtonElement>("#rover-run")!;
+const clearButton = document.querySelector<HTMLButtonElement>("#rover-clear")!;
+
+runButton.disabled = false;
+runButton.onclick = () => {
+  runCommands();
+};
+
+clearButton.disabled = false;
+clearButton.onclick = () => {
+  commandQueue.length = 0;
+  updateQueueDisplay();
+};
+
 document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
   commandQueue.push(moveForward);
+  updateQueueDisplay();
 };
 document.querySelector<HTMLButtonElement>("#rover-right")!.onclick = () => {
   commandQueue.push(turnRight);
+  updateQueueDisplay();
 };
 document.querySelector<HTMLButtonElement>("#rover-reset")!.onclick = () => {
+  commandQueue.length = 0;
   x = 2;
   y = 2;
   direction = 0;
   drawRover();
+  updateQueueDisplay();
 };
 drawRover();
+updateQueueDisplay();
