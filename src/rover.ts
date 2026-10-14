@@ -8,6 +8,10 @@ let x = 2;
 let y = 2;
 let direction = 0;
 
+type RoverCommand = () => void;
+
+const commandQueue: RoverCommand[] = [];
+
 function drawRover() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.strokeStyle = "#718881";
@@ -46,10 +50,10 @@ function turnRight() {
 }
 
 document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
-  moveForward();
+  commandQueue.push(moveForward);
 };
 document.querySelector<HTMLButtonElement>("#rover-right")!.onclick = () => {
-  turnRight();
+  commandQueue.push(turnRight);
 };
 document.querySelector<HTMLButtonElement>("#rover-reset")!.onclick = () => {
   x = 2;
