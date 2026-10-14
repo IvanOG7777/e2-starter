@@ -32,16 +32,24 @@ function drawRover() {
   }`;
 }
 
-document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
+function moveForward() {
   if (direction === 0) y = Math.max(0, y - 1);
   if (direction === 1) x = Math.min(4, x + 1);
   if (direction === 2) y = Math.min(4, y + 1);
   if (direction === 3) x = Math.max(0, x - 1);
   drawRover();
-};
-document.querySelector<HTMLButtonElement>("#rover-right")!.onclick = () => {
+}
+
+function turnRight() {
   direction = (direction + 1) % 4;
   drawRover();
+}
+
+document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
+  moveForward();
+};
+document.querySelector<HTMLButtonElement>("#rover-right")!.onclick = () => {
+  turnRight();
 };
 document.querySelector<HTMLButtonElement>("#rover-reset")!.onclick = () => {
   x = 2;
