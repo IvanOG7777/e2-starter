@@ -4,7 +4,20 @@ const canvas = document.querySelector<HTMLCanvasElement>("#rover-canvas")!;
 const ctx = canvas.getContext("2d")!;
 const readout = document.querySelector<HTMLParagraphElement>("#rover-readout")!;
 const pending = document.querySelector<HTMLElement>("#rover-pending")!;
-const headings = ["North", "East", "South", "West"];
+
+interface Direction {
+  name: string;
+  dx: number;
+  dy: number;
+}
+
+const directions: Direction[] = [
+  { name: "North", dx: 0, dy: -1 },
+  { name: "East", dx: 1, dy: 0 },
+  { name: "South", dx: 0, dy: 1 },
+  { name: "West", dx: -1, dy: 0 },
+];
+
 let x = 2;
 let y = 2;
 let direction = 0;
@@ -44,15 +57,16 @@ function drawRover() {
   ctx.fill();
   ctx.restore();
   readout.textContent = `Position: (${x}, ${y}) · Facing: ${
-    headings[direction]
+    directions[direction].name
   }`;
 }
 
 function moveForward() {
-  if (direction === 0) y = Math.max(0, y - 1);
-  if (direction === 1) x = Math.min(4, x + 1);
-  if (direction === 2) y = Math.min(4, y + 1);
-  if (direction === 3) x = Math.max(0, x - 1);
+  const current = directions[direction];
+
+  x = Math.max(0, Math.min(4, x + current.dx));
+  y = Math.max(0, Math.min(4, y + current.dy));
+
   drawRover();
 }
 
