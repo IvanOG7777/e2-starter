@@ -12,6 +12,7 @@ const diagnostic = document.querySelector<HTMLParagraphElement>(
 let count = 0;
 let panel: HTMLParagraphElement | null = null;
 let panelUpdates = 0;
+const changes = new EventTarget();
 
 function drawMeter() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -39,9 +40,11 @@ function renderStats() {
 function setCount(next: number) {
   const bounded = Math.max(0, Math.min(10, next));
   if (bounded === count) return;
+
   count = bounded;
   drawMeter();
-  if (panel) updateStats();
+
+  changes.dispatchEvent(new Event("count-changed"));
 }
 
 document.querySelector<HTMLButtonElement>("#counter-less")!.onclick = () => {
@@ -58,6 +61,8 @@ document.querySelector<HTMLButtonElement>("#counter-open")!.onclick = () => {
   panel = document.createElement("p");
   host.append(panel);
   renderStats();
+
+  changes.addEventListener("count-changed", updateStats);
 };
 document.querySelector<HTMLButtonElement>("#counter-close")!.onclick = () => {
   if (!panel) return;
